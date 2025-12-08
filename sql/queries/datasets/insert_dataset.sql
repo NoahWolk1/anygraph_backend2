@@ -1,4 +1,3 @@
--- Insert a new dataset
 INSERT INTO datasets (dataset_url, name, file_type, chat_session_id, uploaded_at)
 VALUES (%s, %s, %s, %s, CURRENT_TIMESTAMP)
 ON CONFLICT (dataset_url)

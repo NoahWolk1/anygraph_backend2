@@ -1,4 +1,3 @@
--- Update chat session title
 UPDATE chat_sessions
 SET chat_session_title = %s
 WHERE chat_session_id = %s

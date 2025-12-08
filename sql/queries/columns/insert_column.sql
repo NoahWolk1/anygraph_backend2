@@ -1,4 +1,3 @@
--- Insert column metadata
 INSERT INTO "column" (email, name, datatype, example_value, dataset_url)
 VALUES (%s, %s, %s, %s, %s)
 ON CONFLICT (name, dataset_url)

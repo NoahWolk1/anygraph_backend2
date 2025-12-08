@@ -1,4 +1,3 @@
--- Insert a new user or update last_log_in if already exists
 INSERT INTO "user" (email, full_name, created_at, last_log_in)
 VALUES (%s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
 ON CONFLICT (email)

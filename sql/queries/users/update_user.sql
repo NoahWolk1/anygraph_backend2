@@ -1,4 +1,3 @@
--- Update user information
 UPDATE "user"
 SET
     full_name = COALESCE(%s, full_name),

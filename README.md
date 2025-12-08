@@ -24,6 +24,8 @@ GEMINI_API_KEY=...
 - **Neon DB**: https://neon.tech
 - **Gemini**: https://aistudio.google.com/apikey
 
+After creating your Neon database, open the Neon SQL Editor and run sql/schema/create_tables.sql to initialize the database schema.
+
 ## Run
 
 ```bash

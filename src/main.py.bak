@@ -5,7 +5,6 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
 from datetime import datetime
 import json
-import re
 
 from . import user_service
 from . import chat_service
@@ -483,20 +482,6 @@ def delete_dataset(dataset_url: str):
         )
 
 
-@app.get("/datasets/observations")
-def get_dataset_observations(dataset_url: str, limit: int = 100, offset: int = 0):
-    try:
-        observations_data = dataset_service.get_dataset_observations(
-            dataset_url, limit=limit, offset=offset
-        )
-        return observations_data
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Failed to get dataset observations: {str(e)}"
-        )
-
-
 @app.post("/query/execute")
 def execute_query(query_request: QueryExecute):
     try:
@@ -530,16 +515,8 @@ def execute_query(query_request: QueryExecute):
 
                 if execution_result["success"]:
                     response_text = execution_result['output']
-                    
-                    # Extract base64 images from markdown
-                    image_pattern = r'!\[Chart\]\(data:image/png;base64,([A-Za-z0-9+/=]+)\)'
-                    images = re.findall(image_pattern, response_text)
-                    
-                    # Remove image markdown from text (optional - keep if you want both)
-                    # response_text_clean = re.sub(image_pattern, '', response_text).strip()
                 else:
                     response_text = f"Error: {execution_result['error']}"
-                    images = []
 
                 chat_service.add_message(
                     query_request.chat_session_id,
@@ -551,8 +528,7 @@ def execute_query(query_request: QueryExecute):
                     "query": query_request.query,
                     "code": code,
                     "execution": execution_result,
-                    "response": response_text,
-                    "images": images  # Array of base64 image strings
+                    "response": response_text
                 }
             else:
                 response_text = result["response"]
@@ -566,8 +542,7 @@ def execute_query(query_request: QueryExecute):
                     "query": query_request.query,
                     "code": None,
                     "execution": None,
-                    "response": response_text,
-                    "images": []  # No images for text responses
+                    "response": response_text
                 }
 
         except Exception as e:

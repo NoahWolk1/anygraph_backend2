@@ -128,31 +128,21 @@ def get_dataset_columns(dataset_url: str) -> List[Dict[str, Any]]:
         return [dict(column) for column in columns] if columns else []
 
 
-
-
 def get_dataset_observations(dataset_url: str, limit: int = 100, offset: int = 0) -> Dict[str, Any]:
     """
     Get observations (rows) from a dataset with pagination.
     Returns both the data and metadata about total count.
     """
     import pandas as pd
-    import requests
-    from io import BytesIO
     
     try:
-        # Download the dataset from URL
-        response = requests.get(dataset_url, timeout=30)
-        response.raise_for_status()
-        file_content = BytesIO(response.content)
-        
-        # Determine file type and read accordingly
+        # Read the dataset file
         if dataset_url.endswith('.csv'):
-            df = pd.read_csv(file_content)
+            df = pd.read_csv(dataset_url)
         elif dataset_url.endswith(('.xlsx', '.xls')):
-            df = pd.read_excel(file_content)
+            df = pd.read_excel(dataset_url)
         else:
-            # Default to CSV
-            df = pd.read_csv(file_content)
+            raise ValueError(f"Unsupported file type for {dataset_url}")
         
         # Get total count
         total_count = len(df)
@@ -160,8 +150,8 @@ def get_dataset_observations(dataset_url: str, limit: int = 100, offset: int = 0
         # Apply pagination
         df_page = df.iloc[offset:offset + limit]
         
-        # Convert to list of dictionaries, handling NaN values
-        observations = df_page.fillna('').to_dict('records')
+        # Convert to list of dictionaries
+        observations = df_page.to_dict('records')
         
         # Get column information
         columns = [

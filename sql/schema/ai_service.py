@@ -42,15 +42,9 @@ def process_query(
     prompt = f"""You are a data analysis assistant. Analyze the user's query and respond appropriately.
 
 Dataset URL: {dataset_url}
-Dataset Schema (EXACT column names - use these EXACTLY as shown):
+Dataset Schema:
 {column_info}{context_section}
 User Query: {query}
-
-CRITICAL RULES FOR COLUMN NAMES:
-- ONLY use column names EXACTLY as listed above
-- Column names are case-sensitive
-- Do NOT create, guess, or modify column names
-- If a column doesn't exist in the schema above, tell the user it's not available
 
 RESPONSE RULES:
 - If the answer exists in conversation history, respond with TEXT only (no code)
@@ -66,39 +60,11 @@ OUTPUT FORMAT:
 {{"type": "code", "code": "complete Python code here"}}
 
 CODE REQUIREMENTS (when type is "code"):
-- ALWAYS start with these imports in this exact order:
-  import matplotlib
-  matplotlib.use('Agg')
-  import matplotlib.pyplot as plt
-  import pandas as pd
-  import io
-  import base64
-  import sys
+- Import pandas and needed libraries
 - Load data: df = pd.read_csv("{dataset_url}")
 - Include df_to_markdown helper for tables
 - Print results in markdown format
 - Use exact URL provided above
-- FOR PLOTS, USE THIS EXACT PATTERN:
-  ```python
-  import matplotlib.pyplot as plt
-  import io
-  import base64
-  import sys
-  
-  plt.figure(figsize=(10, 6))
-  # ... create your plot ...
-  
-  # Save and print base64
-  buf = io.BytesIO()
-  plt.savefig(buf, format='png', bbox_inches='tight')
-  buf.seek(0)
-  img_str = base64.b64encode(buf.read()).decode('utf-8')
-  print("\\n")  # Add newline for spacing
-  print("![Chart](data:image/png;base64," + img_str + ")")
-  print("\\n")  # Add newline for spacing
-  sys.stdout.flush()
-  plt.close()
-  ```
 
 HELPER FUNCTION for tables:
 def df_to_markdown(df, max_rows=None):
@@ -187,22 +153,13 @@ Previous Conversation (for context on what the user might be referring to):
     prompt = f"""You are a Python data analysis code generator. Generate Python code to analyze a dataset.
 
 Dataset URL: {dataset_url}
-Available Columns (EXACT names - use EXACTLY as shown):
+Available Columns:
 {column_info}
 {context_section}
 User Query: {query}
 
-CRITICAL: ONLY use column names EXACTLY as listed above. Do NOT guess or modify column names.
-
 Generate Python code that:
-1. ALWAYS starts with imports in this order:
-   import matplotlib
-   matplotlib.use('Agg')
-   import matplotlib.pyplot as plt
-   import pandas as pd
-   import io
-   import base64
-   import sys
+1. Imports pandas as pd and any other needed libraries
 2. Loads data with: df = pd.read_csv("{dataset_url}")
 3. Performs the requested analysis
 4. Prints results in MARKDOWN FORMAT
@@ -233,13 +190,7 @@ CRITICAL: The code must be complete and runnable as-is.
 CRITICAL: Print output in markdown format for better display.
 
 Example structure:
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
 import pandas as pd
-import io
-import base64
-import sys
 
 def df_to_markdown(df, max_rows=None):
     if max_rows and len(df) > max_rows:
@@ -309,22 +260,13 @@ Previous Conversation (for context on what the user might be referring to):
     prompt = f"""You are a Python data analysis code generator. Generate Python code to analyze a dataset.
 
 Dataset URL: {dataset_url}
-Available Columns (EXACT names - use EXACTLY as shown):
+Available Columns:
 {column_info}
 {context_section}
 User Query: {query}
 
-CRITICAL: ONLY use column names EXACTLY as listed above. Do NOT guess or modify column names.
-
 Generate Python code that:
-1. ALWAYS starts with imports in this order:
-   import matplotlib
-   matplotlib.use('Agg')
-   import matplotlib.pyplot as plt
-   import pandas as pd
-   import io
-   import base64
-   import sys
+1. Imports pandas as pd and any other needed libraries
 2. Loads data with: df = pd.read_csv("{dataset_url}")
 3. Performs the requested analysis
 4. Prints results in MARKDOWN FORMAT

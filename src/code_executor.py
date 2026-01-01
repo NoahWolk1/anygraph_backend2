@@ -26,7 +26,7 @@ class CodeExecutor:
             try:
                 container = self.client.containers.run(
                     image="anygraph-executor:latest",
-                    command=["python", "/code/analysis.py"],
+                    command=["python", "-u", "/code/analysis.py"],
                     volumes={temp_dir: {"bind": "/code", "mode": "rw"}},
                     mem_limit="512m",
                     network_disabled=False,
@@ -39,6 +39,10 @@ class CodeExecutor:
                 output = container.decode("utf-8")
                 execution_time = time.time() - start_time
 
+                # Debug: Log output length
+                print(f"[CodeExecutor] Output length: {len(output)} characters")
+                print(f"[CodeExecutor] Output preview: {output[:200] if output else 'EMPTY'}...")
+
                 return {
                     "success": True,
                     "output": output,
@@ -48,10 +52,22 @@ class CodeExecutor:
 
             except docker.errors.ContainerError as e:
                 execution_time = time.time() - start_time
+                # ContainerError has the exit code and container object
+                output_str = ""
+                error_str = str(e)
+                
+                # Try to get logs from the container if available
+                if hasattr(e, 'container'):
+                    try:
+                        logs = e.container.logs(stdout=True, stderr=True).decode("utf-8")
+                        output_str = logs
+                    except:
+                        pass
+                
                 return {
                     "success": False,
-                    "output": e.stdout.decode("utf-8") if e.stdout else "",
-                    "error": e.stderr.decode("utf-8") if e.stderr else str(e),
+                    "output": output_str,
+                    "error": error_str,
                     "execution_time": execution_time
                 }
 

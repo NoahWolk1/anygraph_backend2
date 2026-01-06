@@ -61,3 +61,20 @@ htmlcov/
 *.tmp
 temp/
 tmp/
+
+# UV (Python package manager)
+.uv/
+uv.lock
+
+# Type checking and linting
+.mypy_cache/
+.ruff_cache/
+.dmypy.json
+dmypy.json
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version

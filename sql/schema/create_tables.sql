@@ -62,7 +62,7 @@ CREATE TABLE IF NOT EXISTS share_urls (
     chat_session_id UUID NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (chat_session_id) REFERENCES chat_sessions(chat_session_id) ON DELETE CASCADE
-);
+); 
 
 CREATE INDEX IF NOT EXISTS idx_share_urls_chat_session_id ON share_urls(chat_session_id);
 

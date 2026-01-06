@@ -109,6 +109,24 @@ def df_to_markdown(df, max_rows=None):
         note = ""
     return df.to_markdown(index=False) + note
 
+PANDAS BEST PRACTICES - AVOID COMMON ERRORS:
+1. Index Operations:
+   - NEVER: index.map(dict).fillna(index)  ❌
+   - NEVER: index.map(dict).fillna(index.astype(str))  ❌
+   - CORRECT: [mapping.get(x, str(x)) for x in index]  ✓
+   - CORRECT: index.map(lambda x: mapping.get(x, str(x)))  ✓
+   - CORRECT: pd.Series(index).map(mapping).fillna(pd.Series(index).astype(str))  ✓
+
+2. Value Mapping:
+   - For Series: use .map() or .replace() then .fillna() with scalar
+   - For Index: NEVER use .fillna() with non-scalar values
+   - Always use list comprehension or lambda for Index mapping with fallback
+
+3. Type Conversions:
+   - Use .astype(str) for safe string conversion
+   - Handle unmapped values in the mapping function itself
+   - Never pass Index/Series to .fillna() - only scalar values allowed
+
 Output ONLY the JSON object, nothing else."""
 
     try:
@@ -227,6 +245,24 @@ def df_to_markdown(df, max_rows=None):
 
 NOTE: If the user asks for "all", "every", or "each" item, show ALL rows (pass max_rows=None).
 Only limit rows if the dataset is very large (100+ rows) and user didn't explicitly ask for all.
+
+PANDAS BEST PRACTICES - AVOID COMMON ERRORS:
+1. Index Operations:
+   - NEVER: index.map(dict).fillna(index)  ❌
+   - NEVER: index.map(dict).fillna(index.astype(str))  ❌
+   - CORRECT: [mapping.get(x, str(x)) for x in index]  ✓
+   - CORRECT: index.map(lambda x: mapping.get(x, str(x)))  ✓
+   - CORRECT: pd.Series(index).map(mapping).fillna(pd.Series(index).astype(str))  ✓
+
+2. Value Mapping:
+   - For Series: use .map() or .replace() then .fillna() with scalar
+   - For Index: NEVER use .fillna() with non-scalar values
+   - Always use list comprehension or lambda for Index mapping with fallback
+
+3. Type Conversions:
+   - Use .astype(str) for safe string conversion
+   - Handle unmapped values in the mapping function itself
+   - Never pass Index/Series to .fillna() - only scalar values allowed
 
 CRITICAL: Use the EXACT URL provided above. Do NOT create variables for the URL.
 CRITICAL: The code must be complete and runnable as-is.
@@ -349,6 +385,24 @@ def df_to_markdown(df, max_rows=None):
 
 NOTE: If the user asks for "all", "every", or "each" item, show ALL rows (pass max_rows=None).
 Only limit rows if the dataset is very large (100+ rows) and user didn't explicitly ask for all.
+
+PANDAS BEST PRACTICES - AVOID COMMON ERRORS:
+1. Index Operations:
+   - NEVER: index.map(dict).fillna(index)  ❌
+   - NEVER: index.map(dict).fillna(index.astype(str))  ❌
+   - CORRECT: [mapping.get(x, str(x)) for x in index]  ✓
+   - CORRECT: index.map(lambda x: mapping.get(x, str(x)))  ✓
+   - CORRECT: pd.Series(index).map(mapping).fillna(pd.Series(index).astype(str))  ✓
+
+2. Value Mapping:
+   - For Series: use .map() or .replace() then .fillna() with scalar
+   - For Index: NEVER use .fillna() with non-scalar values
+   - Always use list comprehension or lambda for Index mapping with fallback
+
+3. Type Conversions:
+   - Use .astype(str) for safe string conversion
+   - Handle unmapped values in the mapping function itself
+   - Never pass Index/Series to .fillna() - only scalar values allowed
 
 CRITICAL: Use the EXACT URL provided above. Do NOT create variables for the URL.
 CRITICAL: The code must be complete and runnable as-is.

@@ -6,7 +6,7 @@ from google.genai import types
 from dotenv import load_dotenv
 
 load_dotenv()
-
+  
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 if not GEMINI_API_KEY:
@@ -74,6 +74,14 @@ def df_to_markdown(df, max_rows=None):
     else:
         note = ""
     return df.to_markdown(index=False) + note
+
+PANDAS BEST PRACTICES:
+- NEVER use .fillna() on Index objects with non-scalar values
+- When mapping Index values, use: df.index.map(dict).astype(str) or handle unmapped with .get()
+- For renaming index labels: pd.Series(data, index=[...]) or df.rename()
+- Convert Index to strings BEFORE operations: df.index.astype(str)
+- Use .get() for safe dictionary access: mapping.get(val, str(val))
+- Avoid chaining Index operations with fillna - use Series instead
 
 Output ONLY the JSON object, nothing else."""
 
@@ -185,6 +193,23 @@ def df_to_markdown(df, max_rows=None):
 NOTE: If the user asks for "all", "every", or "each" item, show ALL rows (pass max_rows=None).
 Only limit rows if the dataset is very large (100+ rows) and user didn't explicitly ask for all.
 
+PANDAS BEST PRACTICES - AVOID COMMON ERRORS:
+1. Index Operations:
+   - NEVER: index.map(dict).fillna(index)  ❌
+   - CORRECT: index.map(dict).astype(str) ✓
+   - CORRECT: pd.Series(values).rename(mapping) ✓
+   - CORRECT: [mapping.get(x, str(x)) for x in index] ✓
+
+2. Value Mapping:
+   - For Series: use .map() or .replace()
+   - For Index: convert to list/Series first or use list comprehension
+   - Always handle unmapped values explicitly
+
+3. Type Conversions:
+   - Use .astype(str) for safe string conversion
+   - Check for NaN values before string operations
+   - Use .fillna() only with scalar values
+
 CRITICAL: Use the EXACT URL provided above. Do NOT create variables for the URL.
 CRITICAL: The code must be complete and runnable as-is.
 CRITICAL: Print output in markdown format for better display.
@@ -291,6 +316,23 @@ def df_to_markdown(df, max_rows=None):
 
 NOTE: If the user asks for "all", "every", or "each" item, show ALL rows (pass max_rows=None).
 Only limit rows if the dataset is very large (100+ rows) and user didn't explicitly ask for all.
+
+PANDAS BEST PRACTICES - AVOID COMMON ERRORS:
+1. Index Operations:
+   - NEVER: index.map(dict).fillna(index)  ❌
+   - CORRECT: index.map(dict).astype(str) ✓
+   - CORRECT: pd.Series(values).rename(mapping) ✓
+   - CORRECT: [mapping.get(x, str(x)) for x in index] ✓
+
+2. Value Mapping:
+   - For Series: use .map() or .replace()
+   - For Index: convert to list/Series first or use list comprehension
+   - Always handle unmapped values explicitly
+
+3. Type Conversions:
+   - Use .astype(str) for safe string conversion
+   - Check for NaN values before string operations
+   - Use .fillna() only with scalar values
 
 CRITICAL: Use the EXACT URL provided above. Do NOT create variables for the URL.
 CRITICAL: The code must be complete and runnable as-is.

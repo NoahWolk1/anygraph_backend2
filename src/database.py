@@ -13,6 +13,9 @@ SQL_DIR = os.path.join(os.path.dirname(__file__), '..', 'sql', 'queries')
 if not DATABASE_URL:
     raise ValueError("NEONDB_URL environment variable is not set")
 
+# Clean up the DATABASE_URL - remove any extra quotes
+DATABASE_URL = DATABASE_URL.strip().strip("'").strip('"')
+
 
 def get_connection():
     try:

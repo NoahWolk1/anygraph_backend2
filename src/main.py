@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, Response
 from pydantic import BaseModel, EmailStr
 from typing import Optional, List, Dict, Any
 from datetime import datetime
@@ -40,6 +40,21 @@ async def cors_middleware(request: Request, call_next):
             is_allowed = True
         elif origin.endswith(".vercel.app"):
             is_allowed = True
+    
+    # Handle preflight OPTIONS requests
+    if request.method == "OPTIONS":
+        if is_allowed and origin:
+            return Response(
+                status_code=200,
+                headers={
+                    "Access-Control-Allow-Origin": origin,
+                    "Access-Control-Allow-Credentials": "true",
+                    "Access-Control-Allow-Methods": "*",
+                    "Access-Control-Allow-Headers": "*",
+                }
+            )
+        else:
+            return Response(status_code=400)
     
     response = await call_next(request)
     

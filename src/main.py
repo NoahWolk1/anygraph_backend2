@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, EmailStr
@@ -21,9 +21,40 @@ app = FastAPI(
     version="1.0.0"
 )
 
+# Define allowed origins for CORS
+allowed_origins = [
+    "http://localhost:3000",
+    "http://localhost:5173",
+    "https://anygraphfrontend2-m12lkp87a-noahs-projects-c9f6b98e.vercel.app",
+]
+
+# Custom CORS middleware to handle Vercel preview deployments
+@app.middleware("http")
+async def cors_middleware(request: Request, call_next):
+    origin = request.headers.get("origin")
+    
+    # Check if origin is allowed
+    is_allowed = False
+    if origin:
+        if origin in allowed_origins:
+            is_allowed = True
+        elif origin.endswith(".vercel.app"):
+            is_allowed = True
+    
+    response = await call_next(request)
+    
+    if is_allowed and origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+        response.headers["Access-Control-Allow-Methods"] = "*"
+        response.headers["Access-Control-Allow-Headers"] = "*"
+    
+    return response
+
+# Standard CORS middleware as fallback
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

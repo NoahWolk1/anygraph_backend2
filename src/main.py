@@ -27,6 +27,7 @@ allowed_origins = [
     "http://localhost:5173",
     "https://anygraphfrontend2.vercel.app",
     "https://anygraphfrontend2-m12lkp87a-noahs-projects-c9f6b98e.vercel.app",
+    "https://anygraph-backend-production.up.railway.app",
 ]
 
 # Custom CORS middleware to handle Vercel preview deployments

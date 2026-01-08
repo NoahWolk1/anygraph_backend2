@@ -27,7 +27,6 @@ allowed_origins = [
     "http://localhost:5173",
     "https://anygraphfrontend2.vercel.app",
     "https://anygraphfrontend2-m12lkp87a-noahs-projects-c9f6b98e.vercel.app",
-    "https://anygraph-backend-production.up.railway.app",
 ]
 
 # Custom CORS middleware to handle Vercel preview deployments
@@ -51,11 +50,13 @@ async def cors_middleware(request: Request, call_next):
                 headers={
                     "Access-Control-Allow-Origin": origin,
                     "Access-Control-Allow-Credentials": "true",
-                    "Access-Control-Allow-Methods": "*",
-                    "Access-Control-Allow-Headers": "*",
+                    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS, PATCH",
+                    "Access-Control-Allow-Headers": "Content-Type, Authorization, Accept, Origin, User-Agent",
+                    "Access-Control-Max-Age": "86400",
                 }
             )
         else:
+            print(f"OPTIONS request blocked. Origin: {origin}, is_allowed: {is_allowed}")
             return Response(status_code=400)
     
     response = await call_next(request)
@@ -63,8 +64,8 @@ async def cors_middleware(request: Request, call_next):
     if is_allowed and origin:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
-        response.headers["Access-Control-Allow-Methods"] = "*"
-        response.headers["Access-Control-Allow-Headers"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization, Accept, Origin, User-Agent"
     
     return response
 

@@ -3,8 +3,8 @@ services:
     name: anygraph-backend
     env: python
     plan: free
-    buildCommand: pip install uv && uv sync
-    startCommand: uv run uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
+    startCommand: uvicorn src.main:app --host 0.0.0.0 --port $PORT
     envVars:
       - key: NEONDB_URL
         sync: false

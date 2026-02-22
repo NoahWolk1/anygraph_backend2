@@ -74,7 +74,11 @@ CODE REQUIREMENTS (when type is "code"):
   import io
   import base64
   import sys
-- Load data: df = pd.read_csv("{dataset_url}")
+  import requests
+- Load data using requests (to avoid 403 errors):
+  response = requests.get("{dataset_url}")
+  response.raise_for_status()
+  df = pd.read_csv(io.StringIO(response.text))
 - Include df_to_markdown helper for tables
 - Print results in markdown format
 - Use exact URL provided above
@@ -286,7 +290,10 @@ def df_to_markdown(df, max_rows=None):
     return df.to_markdown(index=False) + note
 
 try:
-    df = pd.read_csv("{dataset_url}")
+    import requests
+    response = requests.get("{dataset_url}")
+    response.raise_for_status()
+    df = pd.read_csv(io.StringIO(response.text))
     # Your analysis here
     result_df = df[['col1', 'col2']]  # example
     print(df_to_markdown(result_df))  # shows all rows
@@ -361,7 +368,11 @@ Generate Python code that:
    import io
    import base64
    import sys
-2. Loads data with: df = pd.read_csv("{dataset_url}")
+   import requests
+2. Loads data using requests (to avoid 403 errors):
+   response = requests.get("{dataset_url}")
+   response.raise_for_status()
+   df = pd.read_csv(io.StringIO(response.text))
 3. Performs the requested analysis
 4. Prints results in MARKDOWN FORMAT
 
@@ -420,7 +431,10 @@ def df_to_markdown(df, max_rows=None):
     return df.to_markdown(index=False) + note
 
 try:
-    df = pd.read_csv("{dataset_url}")
+    import requests
+    response = requests.get("{dataset_url}")
+    response.raise_for_status()
+    df = pd.read_csv(io.StringIO(response.text))
     # Your analysis here
     result_df = df[['col1', 'col2']]  # example
     print(df_to_markdown(result_df))  # shows all rows
